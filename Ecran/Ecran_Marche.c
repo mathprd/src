@@ -54,7 +54,7 @@ void Marche(void)
 	Texte_Pompe = lv_label_create(lv_scr_act());
 
 	lv_label_set_recolor(Texte_Pompe, true);
-	lv_label_set_text(Texte_Pompe, "Pompe en !");
+	lv_label_set_text(Texte_Pompe, "Pompe en marche!");
 	//lv_obj_set_size(Texte_Pompe, 400, 30);
 
 	lv_style_set_text_color(&style_txt,lv_color_hex3(0xE27));
