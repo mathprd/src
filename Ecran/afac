@@ -1,0 +1,41 @@
+
+   //lv_style_init(&style_radio);
+    //lv_style_set_radius(&style_radio, LV_RADIUS_CIRCLE);
+
+    //lv_style_init(&style_radio_chk);
+    //lv_style_set_bg_img_src(&style_radio_chk, NULL);
+
+    uint32_t i;
+    char buf[32];
+
+    lv_obj_set_flex_flow(lv_scr_act(), LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(lv_scr_act(), LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER);
+
+
+    lv_obj_t * Boxjour;
+
+    //lv_obj_set_flex_flow(Boxjour, LV_FLEX_FLOW_ROW);
+    //lv_obj_set_size(Boxjour, lv_pct(10), lv_pct(10));
+    //	lv_obj_align(Boxjour, LV_ALIGN_CENTER, 0, 0);
+
+	lv_obj_add_event_cb(Boxjour, radio_event_handler, LV_EVENT_CLICKED, &active_index_1);
+
+	Boxjour = lv_obj_create(lv_scr_act());
+	lv_checkbox_set_text(Boxjour, "Lu");
+	lv_obj_add_event_cb(Boxjour, radio_event_handler, LV_EVENT_CLICKED, &active_index_1);
+
+	 lv_obj_update_layout(Boxjour);
+
+	// lv_checkbox_set_text(Boxjour, "Ma");
+	 //lv_obj_update_layout(Boxjour);
+	 /*radiobutton_create(Boxjour, "Lu");
+    radiobutton_create(Boxjour, "Ma");
+    radiobutton_create(Boxjour, "Me");
+    radiobutton_create(Boxjour, "Je");
+    radiobutton_create(Boxjour, "Ve");
+    radiobutton_create(Boxjour, "Sa");
+    radiobutton_create(Boxjour, "Di"); */
+    /*Make the first checkbox checked*/
+    //for (i = 0 ; i < 7 ; i++)
+    //lv_obj_add_state(lv_obj_get_child(Boxjour, 0), LV_STATE_CHECKED);
+    //lv_obj_clear_state(lv_obj_get_child(Boxjour, 0), LV_STATE_CHECKED);
