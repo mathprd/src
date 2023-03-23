@@ -8,6 +8,8 @@
 #include <Ecran_Accueil.h>
 #include <Ecran_Marche.h>
 #include <Ecran_Marche.h>
+#include <Ecran_Regle_Prog.h>
+#include <Ecran_Lancer_Prog.h>
 #include <Ecran_Regle_Heure.h>
 #include <Service_Timer.h>
 #include <Service_I2C.h>
@@ -28,9 +30,11 @@ extern void LCD_DisplayOff(void);
 char Change;
 int TempoMini = 20;
 char Transi_0to1;
+char Transi_0to3;
 char Transi_1to0;
 char Transi_2to0;
 char Transi_0to2;
+char Transi_3to0 ;
 char Transi_30to0,Transi_0to30,Transi_30to30;
 
 
@@ -80,6 +84,12 @@ char  Change_Etat(void)
 			Transi_0to30 = 0;
 			Stop_Tempo();
 		}
+		if (Transi_0to3 ==1){
+			Etat = 3;
+			Change = 1;
+			Transi_0to3 = 0 ;
+			Stop_Tempo();
+		}
 	}
 	if(Etat == 1 && Transi_1to0 == 1)
 
@@ -95,6 +105,12 @@ char  Change_Etat(void)
 			Change = 1;
 			Transi_30to0 = 0;
 	}
+	if(Etat == 3 && Transi_3to0 == 1)
+		{
+				Etat = 0;
+				Change = 1;
+				Transi_3to0 = 0;
+		}
 	if(Etat == 30 && Transi_30to30 == 1)
 		{
 				Etat = 30;
@@ -166,9 +182,11 @@ void Modifie_Etat(void)
 	if (Etat == 30)
 	{
 		Transi_30to30 = 0;
-		Creer_Ecran_Regle_Prog(Num_Prog_Courant);
+		Creer_Ecran_Regle_Prog();
 	}
-
+	if (Etat ==3){
+		Creer_Ecran_Lancer_Prog() ;
+	}
 
 
 }
