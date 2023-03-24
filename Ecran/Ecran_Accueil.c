@@ -349,8 +349,8 @@ void Bouton_Lancer_Prog(void) {
 	lv_style_set_radius(&style, 3);
 
 	lv_style_set_bg_opa(&style, LV_OPA_100);
-	lv_style_set_bg_color(&style, lv_palette_main(LV_PALETTE_ORANGE));
-	lv_style_set_bg_grad_color(&style, lv_palette_darken(LV_PALETTE_DEEP_ORANGE, 2));
+	lv_style_set_bg_color(&style, lv_palette_main(LV_PALETTE_BLUE));
+	lv_style_set_bg_grad_color(&style, lv_palette_darken(LV_PALETTE_BLUE, 2));
 	lv_style_set_bg_grad_dir(&style, LV_GRAD_DIR_VER);
 
 	lv_style_set_border_opa(&style, LV_OPA_40);
