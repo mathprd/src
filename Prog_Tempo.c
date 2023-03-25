@@ -119,10 +119,12 @@ void Verif_Programme()
 		Marche = Is_Start(&Data_Prog,date);
 		Stop = Is_Stop(&Data_Prog,date);
 
-		if (Marche == 1 && Stop == 0)
+		if (Marche == 1 && Stop == 0){
 			Allume_Pompe();
-		if (Stop == 1)
+		}
+		if (Stop == 1){
 			Eteint_Pompe();
+		}
 
 }
 
@@ -132,7 +134,7 @@ void CheckStop(Data_Prog_Typedef  *Data)
 	int i;
 	int JStop,MStop,HStop,retH,retM;
 
-	for (i=0; i< NumProgMax; i++)
+	for (i=0; i< NumProgMax; i++)    //1 ????
 	{
 		retM=0;
 		retH = 0;
