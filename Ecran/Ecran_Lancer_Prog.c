@@ -11,11 +11,10 @@
 #include <Service_I2C.h>
 #include <Machine_Etat.h>
 
-extern char Transi_0to3;
 extern char Transi_3to0;
 
 char Prog_Selected ;
-char Prog_en_marche ;
+char Prog_En_Marche ;
 
 
 void event_handler_BoutonRetour_Lancer_Prog(lv_event_t *e);
@@ -119,12 +118,12 @@ void Creer_Bouton_Selection(void)
     /*Create a normal drop down list*/
     lv_obj_t * Bouton_Selection = lv_dropdown_create(lv_scr_act());
     lv_obj_set_size(Bouton_Selection, 160, 40);
-    lv_dropdown_set_options(Bouton_Selection, "Programme 1\n"
-                            "Programme 2\n"
-                            "Programme 3\n"
-                            "Programme 4\n"
-                            "Programme 5\n"
-                            "Programme 6\n"
+    lv_dropdown_set_options(Bouton_Selection, "Programme 1""\n"
+                            "Programme 2""\n"
+                            "Programme 3""\n"
+                            "Programme 4""\n"
+                            "Programme 5""\n"
+                            "Programme 6""\n"
                             "Programme 7");
 
     lv_obj_align(Bouton_Selection, LV_ALIGN_CENTER, -120, 10);
@@ -140,13 +139,14 @@ void event_handler_Bouton_Selection(lv_event_t * e)
         char buf[32];
         lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
         LV_LOG_USER("Option: %s", buf);
+
         if (strcmp(buf, "Programme 1")==0){
         	Prog_Selected = 1 ;
         }
         else if (strcmp(buf, "Programme 2")==0){
             Prog_Selected = 2 ;
         }
-        else if (strcmp(buf,"Programme 3")==0){
+        else if (strcmp(buf, "Programme 3")==0){
             Prog_Selected = 3 ;
         }
         else if (strcmp(buf, "Programme 4")==0){
@@ -239,6 +239,11 @@ void event_handler_Bouton_Appliquer_Prog(lv_event_t *e) {
 
 	if (code == LV_EVENT_PRESSED) {
 		Transi_3to0 = 1;
+		if (Prog_Selected == 0){
+			Prog_En_Marche = 1 ;
+		}else{
+			Prog_En_Marche = Prog_Selected ;
+		}
 	}
 }
 
@@ -254,7 +259,8 @@ void Afficher_Texte(void){
 	lv_label_set_text(Texte, "Selectionner le Programme");
 	//lv_obj_set_size(Texte, 400, 30);
 
-	lv_style_set_text_color(&style_txt,lv_color_hex3(0xE27));
+	lv_color_t color = lv_palette_main(LV_PALETTE_BLUE) ;
+	lv_style_set_text_color(&style_txt,color);	//lv_color_hex3(0xE27)
 	lv_style_set_bg_color(&style_txt,lv_color_hex3(0x0b0) );
 	lv_style_set_text_letter_space(&style_txt, 5);
 	lv_style_set_text_line_space(&style_txt, 10);

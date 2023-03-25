@@ -10,6 +10,7 @@
 #include <Ecran_Marche.h>
 #include <Ecran_Regle_Prog.h>
 #include <Ecran_Lancer_Prog.h>
+#include <Ecran_Arret_Prog.h>
 #include <Ecran_Regle_Heure.h>
 #include <Service_Timer.h>
 #include <Service_I2C.h>
@@ -35,8 +36,12 @@ char Transi_1to0;
 char Transi_2to0;
 char Transi_0to2;
 char Transi_3to0 ;
+char Transi_0to4 ;
+char Transi_4to0 ;
 char Transi_30to0,Transi_0to30,Transi_30to30;
 
+extern char Prog_Selected ;
+extern char Prog_En_Marche ;
 
 char Poussoir_Start_Appui;
 char Fin_Tempo;
@@ -90,6 +95,12 @@ char  Change_Etat(void)
 			Transi_0to3 = 0 ;
 			Stop_Tempo();
 		}
+		if (Transi_0to4 == 1){
+			Etat = 4 ;
+			Change = 1 ;
+			Transi_0to4 = 0 ;
+			Stop_Tempo() ;
+		}
 	}
 	if(Etat == 1 && Transi_1to0 == 1)
 
@@ -101,22 +112,28 @@ char  Change_Etat(void)
 
 	if(Etat == 30 && Transi_30to0 == 1)
 	{
-			Etat = 0;
-			Change = 1;
-			Transi_30to0 = 0;
+		Etat = 0;
+		Change = 1;
+		Transi_30to0 = 0;
 	}
 	if(Etat == 3 && Transi_3to0 == 1)
-		{
-				Etat = 0;
-				Change = 1;
-				Transi_3to0 = 0;
-		}
+	{
+		Etat = 0;
+		Change = 1;
+		Transi_3to0 = 0;
+	}
+	if(Etat == 4 && Transi_4to0 == 1)
+	{
+		Etat = 0;
+		Change = 1;
+		Transi_4to0 = 0;
+	}
 	if(Etat == 30 && Transi_30to30 == 1)
-		{
-				Etat = 30;
-				Change = 1;
-				Transi_30to30 = 0;
-		}
+	{
+		Etat = 30;
+		Change = 1;
+		Transi_30to30 = 0;
+	}
 	if(Etat == -1 )
 	{
 		BSP_TS_GetState(&TS_State);
@@ -154,6 +171,7 @@ void Modifie_Etat(void)
 		Eteint_Pompe();
 		Stop_Pompe_1sec();
 		Num_Prog_Courant = 0;
+		Prog_Selected = 0;
 
 	}
 
@@ -186,6 +204,9 @@ void Modifie_Etat(void)
 	}
 	if (Etat ==3){
 		Creer_Ecran_Lancer_Prog() ;
+	}
+	if (Etat == 4){
+		Creer_Ecran_Arret_Prog() ;
 	}
 
 

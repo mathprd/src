@@ -18,8 +18,11 @@ void Reglage_Heure(void);
 extern char Transi_0to1;
 extern char Transi_0to2;
 extern char Transi_0to3;
+extern char Transi_0to4;
 extern char Transi_0to30;
 extern Data_Prog_Typedef Data_Prog;
+
+extern char Prog_En_Marche ;
 
 void Creer_Ecran_Acceuil(void) {
 	lv_obj_clean(lv_scr_act());
@@ -394,7 +397,7 @@ void Bouton_Lancer_Prog(void) {
 	lv_obj_t *Bouton_Lancer_Prog = lv_btn_create(lv_scr_act());
 	lv_obj_remove_style_all(Bouton_Lancer_Prog);
 	/*Remove the style coming from the theme*/
-	lv_obj_set_size(Bouton_Lancer_Prog, 60, 80);
+	lv_obj_set_size(Bouton_Lancer_Prog, 50, 80);
 	lv_obj_add_style(Bouton_Lancer_Prog, &style, 0);
 
 	lv_obj_add_style(Bouton_Lancer_Prog, &style_pr, LV_STATE_PRESSED);
@@ -406,7 +409,7 @@ void Bouton_Lancer_Prog(void) {
 			LV_EVENT_ALL, NULL);
 
 	lv_obj_t *label = lv_label_create(Bouton_Lancer_Prog);
-	lv_label_set_text(label, "Lancer Progamme");
+	lv_label_set_text(label, "Mode Progamme");
 	lv_obj_center(label);
 
 }
@@ -415,7 +418,11 @@ void event_handler_Bouton_Lancer_Prog(lv_event_t *e) {
 	lv_event_code_t code = lv_event_get_code(e);
 
 	if (code == LV_EVENT_PRESSED) {
-		Transi_0to3 = 1;
+		if (Prog_En_Marche == 0){
+			Transi_0to3 = 1;
+		} else {
+			Transi_0to4 = 1;
+		}
 	}
 }
 
