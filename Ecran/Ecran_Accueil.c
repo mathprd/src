@@ -11,7 +11,7 @@ static lv_obj_t *label_H, *label_D;
 void event_handler_Bouton_Regl_Heure(lv_event_t*);
 void event_handler_Bouton_Marche(lv_event_t*);
 void event_handler_Bouton_Regl_Prog(lv_event_t *e);
-void event_handler_Bouton_Lancer_Prog(lv_event_t *e) ;
+void event_handler_Bouton_Mode_Prog(lv_event_t *e) ;
 
 void Reglage_Heure(void);
 
@@ -22,7 +22,7 @@ extern char Transi_0to4;
 extern char Transi_0to30;
 extern Data_Prog_Typedef Data_Prog;
 
-extern char Prog_En_Marche ;
+extern char Prog_En_Marche[8] ;
 
 void Creer_Ecran_Acceuil(void) {
 	lv_obj_clean(lv_scr_act());
@@ -30,7 +30,7 @@ void Creer_Ecran_Acceuil(void) {
 	Bouton_Marche();
 	Bouton_Reglage_Heure();
 	Bouton_Reglage_Prog();
-	Bouton_Lancer_Prog() ;
+	Bouton_Mode_Prog() ;
 	DS1307_GetTime(&UserTime);
 	Change_Heure(UserTime.Hour, UserTime.Min, UserTime.Sec);
 	Change_Date(UserTime.Date, UserTime.Month, UserTime.Year);
@@ -59,14 +59,14 @@ void Dessine_Horloge(void) {
 	lv_obj_add_style(Cadran, &style, 0);
 	lv_obj_center(Cadran);
 	//lv_obj_set_width(Cadran, lv_pct(40))
-	lv_obj_set_size(Cadran, 200, 80);
+	lv_obj_set_size(Cadran, 150, 60);
 
 	label_H = lv_label_create(Cadran);
 	lv_label_set_text(label_H, "HH:MM:SS");
 	lv_style_set_text_color(&style, lv_palette_main(LV_PALETTE_DEEP_PURPLE));
 	lv_style_set_text_letter_space(&style, 5);
 	lv_style_set_text_line_space(&style, 10);
-	lv_style_set_text_font(&style, &lv_font_montserrat_22);
+	lv_style_set_text_font(&style, &lv_font_montserrat_20);
 	lv_obj_center(label_H);
 	lv_obj_add_style(Cadran, &style, 0);
 	lv_obj_align(Cadran, LV_ALIGN_CENTER, 0, -20);
@@ -80,7 +80,7 @@ void Dessine_Horloge(void) {
 	lv_style_set_text_font(&styleD, &lv_font_montserrat_12);
 
 	lv_obj_center(label_D);
-	lv_obj_align(label_D, LV_ALIGN_CENTER, 0, -70);
+	lv_obj_align(label_D, LV_ALIGN_CENTER, 0, -60);
 
 	lv_obj_add_style(label_D, &styleD, 0);
 
@@ -344,7 +344,7 @@ void event_handler_Bouton_Marche(lv_event_t *e) {
 	}
 }
 
-void Bouton_Lancer_Prog(void) {
+void Bouton_Mode_Prog(void) {
 	/*Init the style for the default state*/
 	static lv_style_t style;
 	lv_style_init(&style);
@@ -405,7 +405,7 @@ void Bouton_Lancer_Prog(void) {
 	lv_obj_set_size(Bouton_Lancer_Prog, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 	lv_obj_align(Bouton_Lancer_Prog, LV_ALIGN_CENTER, -150, 100);
 
-	lv_obj_add_event_cb(Bouton_Lancer_Prog, event_handler_Bouton_Lancer_Prog,
+	lv_obj_add_event_cb(Bouton_Lancer_Prog, event_handler_Bouton_Mode_Prog,
 			LV_EVENT_ALL, NULL);
 
 	lv_obj_t *label = lv_label_create(Bouton_Lancer_Prog);
@@ -414,15 +414,11 @@ void Bouton_Lancer_Prog(void) {
 
 }
 
-void event_handler_Bouton_Lancer_Prog(lv_event_t *e) {
+void event_handler_Bouton_Mode_Prog(lv_event_t *e) {
 	lv_event_code_t code = lv_event_get_code(e);
 
 	if (code == LV_EVENT_PRESSED) {
-		if (Prog_En_Marche == 0){
-			Transi_0to3 = 1;
-		} else {
-			Transi_0to4 = 1;
-		}
+		Transi_0to3 = 1 ;
 	}
 }
 

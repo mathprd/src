@@ -10,11 +10,13 @@
 #include <Service_GPIO.h>
 #include <Service_I2C.h>
 #include <Prog_Tempo.h>
+#include <Ecran_Lancer_Prog.h>
 
 
 char Num_Prog_Courant;
 Data_Prog_Typedef  Data_Prog;
 
+extern char Prog_En_Marche[8];
 
 /******************************************************************/
 /*   Incrémente la n° courant de programme pour la page d'édition */
@@ -134,7 +136,7 @@ void CheckStop(Data_Prog_Typedef  *Data)
 	int i;
 	int JStop,MStop,HStop,retH,retM;
 
-	for (i=0; i< NumProgMax; i++)    //1 ????
+	for (i=0; i< NumProgMax; i++)
 	{
 		retM=0;
 		retH = 0;
@@ -151,18 +153,18 @@ void CheckStop(Data_Prog_Typedef  *Data)
 			HStop = HStop - 24;
 			retH = 1;
 		}
-		if (retH ==0)
-		{
-			JStop = Data->Jour[i];   /* on crée le jour de stop similaire au Jour de start */
-		}
-		else
-		{
-			JStop = Data->Jour[i] << 1;   /* les jours de start sont le lendemain */
-			JStop &=  (Data->Jour[i] & 0x7F) >> 6;  /* on efface le 8ieme bit qui ne
-			sert à rien */
-			JStop |=  (Data->Jour[i] & 0x70) >> 6;  /* Le dimanche de start deveint un lundi de stop */
-		}
-		Data->Jour_Stop[i] = (char)(JStop);
+		//if (retH ==0)
+		//{
+		//	JStop = Data->Jour[i];   /* on crée le jour de stop similaire au Jour de start */
+		//}
+		//else
+		//{
+			//JStop = Data->Jour[i] << 1;   /* les jours de start sont le lendemain */
+			//JStop &=  (Data->Jour[i] & 0x7F) >> 6;  /* on efface le 8ieme bit qui ne
+			//sert à rien */
+			//JStop |=  (Data->Jour[i] & 0x70) >> 6;  /* Le dimanche de start deveint un lundi de stop */
+		//}
+		//Data->Jour_Stop[i] = (char)(JStop);
 		Data->H_Stop[i] = (char)(HStop);
 		Data->M_Stop[i] = (char)(MStop);
 	}
@@ -178,8 +180,11 @@ char  Is_Start(Data_Prog_Typedef  *Data, DS1307_Time_Typedef Top)
 
 	for (Boucle = 0 ; Boucle < NumProgMax ; Boucle ++)
 	{
-		if (((Data->Jour[Boucle] & Top.Day) != 0) && (Data->H_Start[Boucle] == Top.Hour) && (Data->M_Start[Boucle] == Top.Min))
-			Egal = 1;
+		if (Prog_En_Marche[Boucle] == 1){
+			if (/*((Data->Jour[Boucle] & Top.Day) != 0) && */(Data->H_Start[Boucle] == Top.Hour) && (Data->M_Start[Boucle] == Top.Min)){
+				Egal = 1;
+			}
+		}
 	}
 	return (Egal);
 }
@@ -194,8 +199,11 @@ char  Is_Stop(Data_Prog_Typedef  * Data,DS1307_Time_Typedef Top)
 
 	for (Boucle = 0 ; Boucle < NumProgMax ; Boucle ++)
 	{
-		if (((Data->Jour[Boucle] & Top.Day) != 0) && (Data->H_Stop[Boucle] == Top.Hour) && (Data->M_Stop[Boucle] == Top.Min))
-			Egal = 1;
+		if (Prog_En_Marche[Boucle] == 1){
+			if (/*((Data->Jour[Boucle] & Top.Day) != 0) && */(Data->H_Stop[Boucle] == Top.Hour) && (Data->M_Stop[Boucle] == Top.Min)){
+				Egal = 1;
+			}
+		}
 	}
 	return (Egal);
 }

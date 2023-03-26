@@ -80,7 +80,9 @@ int main(void)
         else
         {
         	Refresh_Etat();
-        	Verif_Programme();
+        	//if (Etat /= 30){
+        		Verif_Programme();
+        	//}
         }
 	}
 
