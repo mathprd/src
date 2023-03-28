@@ -200,7 +200,7 @@ void Roller_Duree(void) {
 	static lv_style_t style_sel;
 
 	Chaine_Opt[0] = 0;
-	for (Boucle = 0; Boucle < 3; Boucle++) {
+	for (Boucle = 0; Boucle < 5; Boucle++) {
 		sprintf(Txt, "%d\n", Boucle);
 		strcat(Chaine_Opt, Txt);
 	}

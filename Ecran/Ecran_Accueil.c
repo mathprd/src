@@ -436,7 +436,7 @@ void Creer_Label_ProgActif(void) {
 
 	for (Boucle = 0; Boucle < NumProgMax; Boucle++)
 	{
-		if ((Data_Prog.Prog_Actif & (0x01 << Boucle)) == (0x01 << Boucle))
+		if (Prog_En_Marche[Boucle] == 1)
 		{
 			LabelProgActif[Boucle] = lv_label_create(lv_scr_act());
 			sprintf(Texte, " P%d on", Boucle + 1);

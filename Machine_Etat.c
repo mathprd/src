@@ -28,7 +28,6 @@ extern void LCD_DisplayOn(void);
 extern void LCD_DisplayOff(void);
 
 char Change;
-int TempoMini = 20;
 char Transi_0to1;
 char Transi_0to3;
 char Transi_1to0;
@@ -43,8 +42,8 @@ extern char Prog_En_Marche[8] ;
 
 char Poussoir_Start_Appui;
 char Fin_Tempo;
-int Compteur_Marche_Pompe;
 char Minute60Sec ;
+int Compteur_Marche_Pompe = 20 ;
 
 TS_StateTypeDef  TS_State;
 
@@ -76,7 +75,6 @@ char  Change_Etat(void)
 			Etat = 2;
 			Change = 1;
 			Transi_0to2 = 0;
-			Compteur_Marche_Pompe = TempoMini;
 			Poussoir_Start_Appui = 0;
 			Stop_Tempo();
 		}
@@ -164,8 +162,6 @@ void Modifie_Etat(void)
 
 		Creer_Ecran_Acceuil();
 		Run_Tempo();
-		//Eteint_Pompe();
-		//Stop_Pompe_1sec();
 		Num_Prog_Courant = 0;
 		Prog_Selected = 0;
 
@@ -184,13 +180,8 @@ void Modifie_Etat(void)
 		Transi_0to2 = 0;
 		Creer_Ecran_Marche();
 
-		Compteur_Marche_Pompe = TempoMini;  //par défaut 20 mn de marche
-
 		Refresh_Slider(Compteur_Marche_Pompe);
 
-		Init_TIM3_Pompe_1sec();
-		Run_Pompe_1sec();
-		Allume_Pompe();
 	}
 
 	if (Etat == 30)

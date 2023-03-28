@@ -12,11 +12,12 @@
 #include <Prog_Tempo.h>
 #include <Ecran_Lancer_Prog.h>
 
-
 char Num_Prog_Courant;
 Data_Prog_Typedef  Data_Prog;
 
 extern char Prog_En_Marche[8];
+extern int Etat ;
+
 
 /******************************************************************/
 /*   Incrémente la n° courant de programme pour la page d'édition */
@@ -120,12 +121,11 @@ void Verif_Programme()
 
 		Marche = Is_Start(&Data_Prog,date);
 		Stop = Is_Stop(&Data_Prog,date);
-
-		if (Marche == 1 && Stop == 0){
-			Allume_Pompe();
-		}
 		if (Stop == 1){
 			Eteint_Pompe();
+		}
+		if (Marche == 1){
+			Allume_Pompe();
 		}
 
 }
@@ -153,18 +153,10 @@ void CheckStop(Data_Prog_Typedef  *Data)
 			HStop = HStop - 24;
 			retH = 1;
 		}
-		//if (retH ==0)
-		//{
-		//	JStop = Data->Jour[i];   /* on crée le jour de stop similaire au Jour de start */
-		//}
-		//else
-		//{
-			//JStop = Data->Jour[i] << 1;   /* les jours de start sont le lendemain */
-			//JStop &=  (Data->Jour[i] & 0x7F) >> 6;  /* on efface le 8ieme bit qui ne
-			//sert à rien */
-			//JStop |=  (Data->Jour[i] & 0x70) >> 6;  /* Le dimanche de start deveint un lundi de stop */
-		//}
-		//Data->Jour_Stop[i] = (char)(JStop);
+		JStop = (Data->Jour[i] << retH) | (Data->Jour[i] >> (7-retH)) ;
+		JStop &= ~(0x80) ;  //efface le bit numéro 7
+
+		Data->Jour_Stop[i] = (char)(JStop);
 		Data->H_Stop[i] = (char)(HStop);
 		Data->M_Stop[i] = (char)(MStop);
 	}
@@ -173,16 +165,42 @@ void CheckStop(Data_Prog_Typedef  *Data)
 
 char  Is_Start(Data_Prog_Typedef  *Data, DS1307_Time_Typedef Top)
 {
-	int Boucle;
+	int i;
 	char Egal ;
 
 	Egal = 0;
 
-	for (Boucle = 0 ; Boucle < NumProgMax ; Boucle ++)
+	for (i = 0 ; i < NumProgMax ; i ++)
 	{
-		if (Prog_En_Marche[Boucle] == 1){
-			if (/*((Data->Jour[Boucle] & Top.Day) != 0) && */(Data->H_Start[Boucle] == Top.Hour) && (Data->M_Start[Boucle] == Top.Min)){
-				Egal = 1;
+		if (Prog_En_Marche[i] == 1){
+			if ((Data->Jour[i] == Data->Jour_Stop[i]) &&  ((Data->Jour[i] & Top.Day) != 0)) {  //même jour de fin et de début a mettre et jour actuel
+				if ((Data->H_Start[i] == Data->H_Stop[i]) && (Data->H_Start[i] == Top.Hour)){ 	//même heure de début et de fin et heure actuelle
+					if ((Data->M_Start[i] <= Top.Min) && (Data->M_Stop[i] > Top.Min)) {
+						Egal = 1 ;
+					}
+				} else if (Data->H_Start[i] == Top.Hour){
+					if (Data->M_Start[i] <= Top.Min){
+						Egal = 1 ;
+					}
+				} else if (Data->H_Stop[i] == Top.Hour){
+					if (Data->M_Stop[i] > Top.Min){
+						Egal = 1 ;
+					}
+				} else if ((Data->H_Start[i] < Top.Hour) && (Data->H_Stop[i] > Top.Hour)){
+					Egal = 1 ;
+				}
+			} else if ((Data->Jour[i] & Top.Day) != 0){   //Jour actuel = Jour de debut
+				if ((Data->H_Start[i] = Top.Hour) && (Data->M_Start[i] <= Top.Min)){
+					Egal = 1 ;
+				} else if (Data->H_Start[i] < Top.Hour){
+					Egal = 1 ;
+				}
+			} else if ((Data->Jour_Stop[i] & Top.Day) != 0){   //Jour actuel = Jour de fin
+				if ((Data->H_Stop[i] = Top.Hour) && (Data->M_Stop[i] > Top.Min)){
+					Egal = 1 ;
+				} else if (Data->H_Stop[i] > Top.Hour){
+					Egal = 1 ;
+				}
 			}
 		}
 	}
@@ -200,7 +218,7 @@ char  Is_Stop(Data_Prog_Typedef  * Data,DS1307_Time_Typedef Top)
 	for (Boucle = 0 ; Boucle < NumProgMax ; Boucle ++)
 	{
 		if (Prog_En_Marche[Boucle] == 1){
-			if (/*((Data->Jour[Boucle] & Top.Day) != 0) && */(Data->H_Stop[Boucle] == Top.Hour) && (Data->M_Stop[Boucle] == Top.Min)){
+			if (((Data->Jour_Stop[Boucle] & Top.Day) != 0) && (Data->H_Stop[Boucle] == Top.Hour) && (Data->M_Stop[Boucle] == Top.Min)){
 				Egal = 1;
 			}
 		}
@@ -208,6 +226,19 @@ char  Is_Stop(Data_Prog_Typedef  * Data,DS1307_Time_Typedef Top)
 	return (Egal);
 }
 
+
+
+void Gestion_Priorites(void){
+
+	if (Etat != 30){
+		Verif_Programme();
+	}
+
+
+
+
+
+}
 
 
 
