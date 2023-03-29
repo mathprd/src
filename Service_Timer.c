@@ -84,7 +84,7 @@ void TIM2_IRQHandler(void)
 
 void Run_Pompe_1sec(void)
 {
-	Minute60Sec = 60;
+	Minute60Sec = 1;
 	TIM3->CNT = 0;
 	TIM3->DIER |= 0x01;
 	TIM3->CR1  |= 0x01;
@@ -112,7 +112,6 @@ void Init_TIM3_Pompe_1sec(void)
 	TIM3->PSC = 1281;
 	HAL_NVIC_SetPriority(TIM3_IRQn, 1, 0);
 	HAL_NVIC_EnableIRQ(TIM3_IRQn);
-	Minute60Sec = 60;
 
 
 }

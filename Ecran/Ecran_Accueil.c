@@ -274,8 +274,8 @@ void Bouton_Marche(void) {
 	lv_style_set_radius(&style, 3);
 
 	lv_style_set_bg_opa(&style, LV_OPA_100);
-	lv_style_set_bg_color(&style, lv_palette_main(LV_PALETTE_ORANGE));
-	lv_style_set_bg_grad_color(&style, lv_palette_darken(LV_PALETTE_DEEP_ORANGE, 2));
+	lv_style_set_bg_color(&style, lv_palette_main(LV_PALETTE_BLUE));
+	lv_style_set_bg_grad_color(&style, lv_palette_darken(LV_PALETTE_BLUE, 2));
 	lv_style_set_bg_grad_dir(&style, LV_GRAD_DIR_VER);
 
 	lv_style_set_border_opa(&style, LV_OPA_40);
@@ -331,7 +331,7 @@ void Bouton_Marche(void) {
 			LV_EVENT_ALL, NULL);
 
 	lv_obj_t *label = lv_label_create(Bouton_Marche);
-	lv_label_set_text(label, "Marche Pompe");
+	lv_label_set_text(label, "Mode Manuel");
 	lv_obj_center(label);
 
 }

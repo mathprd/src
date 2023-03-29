@@ -532,9 +532,9 @@ static void radio_event_handler(lv_event_t *e) {
 		strcat(txt, lv_checkbox_get_text(obj));
 		if (txt[0] == 'L')
 			Val = 0x01 << 0;
-		if (txt[0] == 'M' && txt[1] == 'a')
+		if ((txt[0] == 'M') && (txt[1] == 'a'))
 			Val = 0x01 << 1;
-		if (txt[0] == 'M' && txt[1] == 'e')
+		if ((txt[0] == 'M') && (txt[1] == 'e'))
 			Val = 0x01 << 2;
 		if (txt[0] == 'J')
 			Val = 0x01 << 3;

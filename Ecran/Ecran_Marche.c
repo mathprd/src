@@ -23,31 +23,36 @@ static void slider_event_cb(lv_event_t * );
 
 int TempoMini = 20;
 
-//extern char Transi_0to1;
 extern char Transi_1to0;
 extern char Transi_2to0;
-//char Transi_0to2;
 
 extern char Poussoir_Start_Appui;
-//char Fin_Tempo;
 extern int Compteur_Marche_Pompe;
 extern char Minute60Sec ;
 
+int A_Effacer = 0 ;
+int Mode_Manuel = 0 ;
+
+lv_obj_t * spinner ;
+lv_obj_t * Texte_Marche;
 
 
 
 void Creer_Ecran_Marche(void)
 {
 	lv_obj_clean(lv_scr_act());
-	Marche();
+	Default_Affichage();
 	Bouton_Retour_Marche();
 	Bouton_Stopper_Pompe();
 	Bouton_Activer_Pompe();
 	lv_task_handler();
+	if (A_Effacer == 1){
+		Ecran_Marche();
+	}
 }
 
 
-void Marche(void)
+void Default_Affichage(void)
 {
 	//static const lv_style_prop_t props[] = {LV_STYLE_BG_COLOR, 0};
 	static lv_obj_t * Texte_Pompe;
@@ -61,24 +66,21 @@ void Marche(void)
 
 	Texte_Pompe = lv_label_create(lv_scr_act());
 
-	lv_label_set_recolor(Texte_Pompe, true);
-	lv_label_set_text(Texte_Pompe, "Pompe en marche!");
-	//lv_obj_set_size(Texte_Pompe, 400, 30);
 
-	lv_style_set_text_color(&style_txt,lv_color_hex3(0xE27));
+	lv_label_set_recolor(Texte_Pompe, true);
+	lv_label_set_text(Texte_Pompe, "Mode Manuel");
+	//lv_obj_set_size(Texte_Pompe, 400, 80);
+
+	lv_color_t color = lv_palette_main(LV_PALETTE_BLUE) ;
+	lv_style_set_text_color(&style_txt, color);
 	lv_style_set_bg_color(&style_txt,lv_color_hex3(0x0b0) );
 	lv_style_set_text_letter_space(&style_txt, 5);
 	lv_style_set_text_line_space(&style_txt, 10);
 	lv_style_set_text_font(&style_txt, &lv_font_montserrat_28);
 	lv_obj_add_style(Texte_Pompe, &style_txt, 0);
 
-	lv_obj_align(Texte_Pompe, LV_ALIGN_CENTER, -40, -70);
+	lv_obj_align(Texte_Pompe, LV_ALIGN_CENTER, 0, -80);
 
-
-	lv_obj_t * spinner = lv_spinner_create(lv_scr_act(), 500, 45);
-	lv_obj_set_size(spinner, 70, 70);
-	lv_obj_center(spinner);
-	lv_obj_align_to(spinner,Texte_Pompe, LV_ALIGN_CENTER, 230, 0);
 
 
 
@@ -111,7 +113,7 @@ void Marche(void)
 	/*Create a slider and add the style*/
 	Slider_Marche = lv_slider_create(lv_scr_act());
 	lv_slider_set_value(Slider_Marche, 20, LV_ANIM_ON);
-	lv_slider_set_range(Slider_Marche,5, 120);
+	lv_slider_set_range(Slider_Marche,1, 75);
 	lv_obj_remove_style_all(Slider_Marche);        /*Remove the styles coming from the theme*/
 
 	lv_obj_add_style(Slider_Marche, &style_main, LV_PART_MAIN);
@@ -122,33 +124,37 @@ void Marche(void)
 	lv_obj_align(Slider_Marche, LV_ALIGN_CENTER, 0, 10);
 	lv_obj_add_event_cb(Slider_Marche, slider_event_cb, LV_EVENT_VALUE_CHANGED, NULL);
 
-	lv_obj_add_style(spinner, &style_knob, LV_PART_MAIN);
-
-
 
 	slider_label = lv_label_create(lv_scr_act());
 	lv_label_set_text(slider_label, "20 minutes");
-
 	//lv_obj_set_size(slider_label, 400, 30);
-
 
 	lv_style_set_text_color(&style_label, lv_palette_main(LV_PALETTE_DEEP_PURPLE));
 	lv_style_set_text_letter_space(&style_label, 5);
 	lv_style_set_text_line_space(&style_label, 10);
 	lv_style_set_text_font(&style_label, &lv_font_montserrat_18);
 	lv_obj_add_style(slider_label, &style_label, 0);
-	lv_obj_align_to(slider_label, Slider_Marche, LV_ALIGN_CENTER, 0, 30);
-
+	lv_obj_align_to(slider_label, Slider_Marche, LV_ALIGN_CENTER, 0, 40);
 
 }
+
 
 static void slider_event_cb(lv_event_t * e)
 {
 	lv_obj_t * slider = lv_event_get_target(e);
 	char buf[25];
-	lv_snprintf(buf, sizeof(buf), "Il reste %d minutes", lv_slider_get_value(slider));
-	lv_label_set_text(slider_label, buf);
+
+	if (A_Effacer == 1){
+		lv_snprintf(buf, sizeof(buf), "Il reste %d minutes", lv_slider_get_value(slider));
+		lv_label_set_text(slider_label, buf);
+		lv_obj_align_to(slider_label, Slider_Marche, LV_ALIGN_CENTER, 0, 40);
+	} else {
+		lv_snprintf(buf, sizeof(buf), "%d minutes", lv_slider_get_value(slider));
+		lv_label_set_text(slider_label, buf);
+		lv_obj_align_to(slider_label, Slider_Marche, LV_ALIGN_CENTER, 0, 40);
+	}
 	Compteur_Marche_Pompe = lv_slider_get_value(slider);
+
 
 	//lv_obj_align_to(slider_label, slider, LV_ALIGN_CENTER, 0, 50);
 }
@@ -157,22 +163,29 @@ void Refresh_Slider(int Val)
 {
 
 	char buf[25];
-
-	if (Val > 5)
-	{
-		lv_slider_set_value(Slider_Marche, Val, LV_ANIM_ON);
-		lv_snprintf(buf, sizeof(buf), "Il reste %d minutes", Compteur_Marche_Pompe);
-		lv_label_set_text(slider_label, buf);
+	if (A_Effacer == 1){
+		if (Val > 5){
+			lv_slider_set_value(Slider_Marche, Val, LV_ANIM_ON);
+			lv_snprintf(buf, sizeof(buf), "Il reste %d minutes", Compteur_Marche_Pompe);
+			lv_label_set_text(slider_label, buf);
+			lv_obj_align_to(slider_label, Slider_Marche, LV_ALIGN_CENTER, 0, 40);
+		} else {
+			lv_snprintf(buf, sizeof(buf), "Il reste %d mn et %d sec", Compteur_Marche_Pompe,Minute60Sec);
+			lv_label_set_text(slider_label, buf);
+			lv_obj_align_to(slider_label, Slider_Marche, LV_ALIGN_CENTER, 0, 40);
+		}
+	} else {
+		if (Val > 5){
+			lv_slider_set_value(Slider_Marche, Val, LV_ANIM_ON);
+			lv_snprintf(buf, sizeof(buf), "%d minutes", Compteur_Marche_Pompe);
+			lv_label_set_text(slider_label, buf);
+			lv_obj_align_to(slider_label, Slider_Marche, LV_ALIGN_CENTER, 0, 40);
+		} else {
+			lv_snprintf(buf, sizeof(buf), "%d mn et %d sec", Compteur_Marche_Pompe,Minute60Sec);
+			lv_label_set_text(slider_label, buf);
+			lv_obj_align_to(slider_label, Slider_Marche, LV_ALIGN_CENTER, 0, 40);
+		}
 	}
-
-	else
-	{
-		lv_snprintf(buf, sizeof(buf), "Il reste %d mn et %d sec", Compteur_Marche_Pompe,Minute60Sec);
-		lv_label_set_text(slider_label, buf);
-	}
-
-
-
 
 }
 
@@ -333,9 +346,14 @@ void event_handler_BoutonActiver_Pompe(lv_event_t *e) {
 	lv_event_code_t code = lv_event_get_code(e);
 
 	if (code == LV_EVENT_PRESSED) {
-		Init_TIM3_Pompe_1sec();
+		if (A_Effacer == 0){
+			A_Effacer = 1 ;
+			Ecran_Marche();
+		}
+		//Init_TIM3_Pompe_1sec();
 		Run_Pompe_1sec();
 		Allume_Pompe();
+		Mode_Manuel = 1 ;
 	}
 }
 
@@ -416,15 +434,61 @@ void event_handler_BoutonStopper_Pompe(lv_event_t *e) {
 	lv_event_code_t code = lv_event_get_code(e);
 
 	if (code == LV_EVENT_PRESSED) {
+		if (A_Effacer == 1){
+			lv_obj_del(Texte_Marche) ;
+			lv_obj_del(spinner) ;
+			A_Effacer = 0 ;
+		}
 		Eteint_Pompe();
 		Stop_Pompe_1sec();;
 		Compteur_Marche_Pompe = TempoMini ;
+		Mode_Manuel = 0 ;
+		Minute60Sec = 0 ;
 	}
 }
 
 
 
+void Ecran_Marche(void){
 
+	static lv_style_t style_knob;
+
+	spinner = lv_spinner_create(lv_scr_act(), 500, 45);
+	lv_obj_set_size(spinner, 70, 70);
+	lv_obj_center(spinner);
+	lv_obj_align(spinner, LV_ALIGN_CENTER, 180, -80);
+
+	lv_style_init(&style_knob);
+	lv_style_set_bg_opa(&style_knob, LV_OPA_COVER);
+	lv_style_set_bg_color(&style_knob, lv_palette_main(LV_PALETTE_RED));
+	lv_style_set_border_color(&style_knob, lv_palette_darken(LV_PALETTE_CYAN, 3));
+	lv_style_set_border_width(&style_knob, 3);
+	lv_style_set_radius(&style_knob, LV_RADIUS_CIRCLE);
+	lv_style_set_pad_all(&style_knob, 10); /*Makes the knob larger*/
+
+	lv_obj_add_style(spinner, &style_knob, LV_PART_MAIN);
+
+
+
+	static lv_style_t style_txt;
+
+	Texte_Marche = lv_label_create(lv_scr_act());
+
+	lv_label_set_recolor(Texte_Marche, true);
+	lv_label_set_text(Texte_Marche, "Pompe en marche !");
+	//lv_obj_set_size(Texte_Marche, 400, 80);
+
+	lv_color_t color = lv_palette_main(LV_PALETTE_RED) ;
+	lv_style_set_text_color(&style_txt,color);
+	lv_style_set_bg_color(&style_txt,lv_color_hex3(0x0b0) );
+	lv_style_set_text_letter_space(&style_txt, 5);
+	lv_style_set_text_line_space(&style_txt, 10);
+	lv_style_set_text_font(&style_txt, &lv_font_montserrat_18);
+	lv_obj_add_style(Texte_Marche, &style_txt, 0);
+
+	lv_obj_align(Texte_Marche, LV_ALIGN_CENTER, 0, -40);
+
+}
 
 
 

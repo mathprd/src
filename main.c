@@ -63,6 +63,7 @@ int main(void)
 	Init_TIM2_Tempo();
 	Stop_Tempo();
 
+	Init_TIM3_Pompe_1sec();
 
 	Transi_2to0 = 1;
     Etat = 2;

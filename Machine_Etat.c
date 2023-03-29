@@ -40,6 +40,13 @@ char Transi_30to0,Transi_0to30,Transi_30to30;
 extern char Prog_Selected ;
 extern char Prog_En_Marche[8] ;
 
+extern lv_obj_t * spinner ;
+extern lv_obj_t * Texte_Marche;
+extern int A_Effacer ;
+extern int TempoMini ;
+extern int Mode_Manuel ;
+
+
 char Poussoir_Start_Appui;
 char Fin_Tempo;
 char Minute60Sec ;
@@ -141,12 +148,22 @@ char  Change_Etat(void)
 	}
 	if(Etat == 2)
 	{
-		if (Transi_2to0 == 1 || Compteur_Marche_Pompe < 0 || Poussoir_Start_Appui==1)
+		if (Transi_2to0 == 1 || Poussoir_Start_Appui==1)
 		{
 			Etat = 0;
 			Change = 1;
 			Transi_2to0 = 0;
 			Poussoir_Start_Appui=0;
+		}
+		if (Compteur_Marche_Pompe < 0){
+			lv_obj_del(Texte_Marche) ;
+			lv_obj_del(spinner) ;
+			A_Effacer = 0 ;
+			Eteint_Pompe();
+			Stop_Pompe_1sec();;
+			Compteur_Marche_Pompe = TempoMini ;
+			Mode_Manuel = 0 ;
+			Minute60Sec = 0 ;
 		}
 	}
 

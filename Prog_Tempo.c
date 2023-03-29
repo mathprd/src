@@ -17,6 +17,7 @@ Data_Prog_Typedef  Data_Prog;
 
 extern char Prog_En_Marche[8];
 extern int Etat ;
+extern int Mode_Manuel ;
 
 
 /******************************************************************/
@@ -113,19 +114,18 @@ void Stocke_Data_Prog(Data_Prog_Typedef *Data)
 void Verif_Programme()
 {
 		DS1307_Time_Typedef date;
+		char Marche ;
 
 		DS1307_GetTime(&date);
-		char Marche,Stop;
 
 		CheckStop(&Data_Prog);
 
 		Marche = Is_Start(&Data_Prog,date);
-		Stop = Is_Stop(&Data_Prog,date);
-		if (Stop == 1){
-			Eteint_Pompe();
-		}
+
 		if (Marche == 1){
 			Allume_Pompe();
+		} else {
+			Eteint_Pompe();
 		}
 
 }
@@ -208,35 +208,13 @@ char  Is_Start(Data_Prog_Typedef  *Data, DS1307_Time_Typedef Top)
 }
 
 
-char  Is_Stop(Data_Prog_Typedef  * Data,DS1307_Time_Typedef Top)
-{
-	int Boucle;
-	char Egal ;
-
-	Egal = 0;
-
-	for (Boucle = 0 ; Boucle < NumProgMax ; Boucle ++)
-	{
-		if (Prog_En_Marche[Boucle] == 1){
-			if (((Data->Jour_Stop[Boucle] & Top.Day) != 0) && (Data->H_Stop[Boucle] == Top.Hour) && (Data->M_Stop[Boucle] == Top.Min)){
-				Egal = 1;
-			}
-		}
-	}
-	return (Egal);
-}
-
-
-
 void Gestion_Priorites(void){
 
-	if (Etat != 30){
-		Verif_Programme();
+	if (Mode_Manuel != 1){
+		if (Etat != 30){
+			Verif_Programme();
+		}
 	}
-
-
-
-
 
 }
 
