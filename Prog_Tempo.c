@@ -61,9 +61,9 @@ void Lire_Data_Prog(Data_Prog_Typedef *Data)
 
 	int indice ;
 
-	Data->Prog_Actif =  DS1307_Get_MemRTC_Data(0);
+	//Data->Prog_Actif =  DS1307_Get_MemRTC_Data(0);
 
-	for  (indice = 0  ; indice < NumProgMax ; indice++)
+	for  (indice = 0  ; indice < NumProgMax  ; indice++)
 	{
 			Data->Jour[indice]    =  DS1307_Get_MemRTC_Data((indice)*5+1);
 			Data->H_Start[indice] =  DS1307_Get_MemRTC_Data((indice)*5+2);
@@ -91,9 +91,9 @@ void Stocke_Data_Prog(Data_Prog_Typedef *Data)
 {
 
 	int indice ;
-	char Tempo;
+	//char Tempo;
 
-	Tempo = 0;
+	//Tempo = 0;
 	for  (indice = 0  ; indice < NumProgMax ; indice++)
 	{
 			DS1307_Set_MemRTC_Data((indice)*5+1,Data->Jour[indice]);
@@ -102,13 +102,13 @@ void Stocke_Data_Prog(Data_Prog_Typedef *Data)
 			DS1307_Set_MemRTC_Data((indice)*5+4,Data->H_Duree[indice]);
 			DS1307_Set_MemRTC_Data((indice)*5+5,Data->M_Duree[indice]);
 
-			if ((Data->H_Duree[indice] + Data->M_Duree[indice] != 0) && (Data->Jour[indice] != 0))
-			{
-				 Tempo = Tempo | (0x01 << indice);  /* Si le programme contient une valeur, */
-			}
+			//if ((Data->H_Duree[indice] + Data->M_Duree[indice] != 0) && (Data->Jour[indice] != 0))
+			//{
+			//	 Tempo = Tempo | (0x01 << indice);  /* Si le programme contient une valeur, */
+			//}
 	}
-	Data->Prog_Actif = Tempo ;
-	DS1307_Set_MemRTC_Data(0,Data->Prog_Actif);
+	//Data->Prog_Actif = Tempo ;
+	//DS1307_Set_MemRTC_Data(0,Data->Prog_Actif);
 }
 
 void Verif_Programme()

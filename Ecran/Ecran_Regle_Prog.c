@@ -98,7 +98,7 @@ void Label_Num(char Num) {
 		lv_roller_set_selected(Roller_H_Start, Data_Prog.H_Start[Num-1], LV_ANIM_ON);
 		lv_roller_set_selected(Roller_M_Start, Data_Prog.M_Start[Num-1], LV_ANIM_ON);
 
-		for (Boucle = 0; Boucle < NumProgMax ; Boucle++ )
+		for (Boucle = 0; Boucle < NumProgMax-1 ; Boucle++ )
 		{
 			if ((Data_Prog.Jour[Num-1] & (0x01 << Boucle)) == (0x01 << Boucle))
 				lv_obj_add_state(BoxJour[Boucle], LV_STATE_CHECKED);
