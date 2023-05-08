@@ -11,6 +11,7 @@
 #include <Ecran_Regle_Prog.h>
 #include <Ecran_Lancer_Prog.h>
 #include <Ecran_Regle_Heure.h>
+#include <Ecran_Lancer_Capteur.h>
 #include <Service_Timer.h>
 #include <Service_I2C.h>
 #include <Service_GPIO.h>
@@ -30,12 +31,17 @@ extern void LCD_DisplayOff(void);
 char Change;
 char Transi_0to1;
 char Transi_0to3;
+char Transi_0to4;
 char Transi_1to0;
 char Transi_2to0;
 char Transi_0to2;
 char Transi_3to0 ;
 char Transi_3to3 ;
+char Transi_4to4 ;
+char Transi_4to0 ;
 char Transi_30to0,Transi_0to30,Transi_30to30;
+int Bouton = 0;
+int Default = 1 ;
 
 extern char Prog_Selected ;
 extern char Prog_En_Marche[8] ;
@@ -77,7 +83,7 @@ char  Change_Etat(void)
 			Change = 1;
 			Fin_Tempo = 0;
 		}
-		if (Transi_0to2 == 1 || Poussoir_Start_Appui == 1 )
+		if (Transi_0to2 == 1)
 		{
 			Etat = 2;
 			Change = 1;
@@ -96,6 +102,21 @@ char  Change_Etat(void)
 			Etat = 3;
 			Change = 1;
 			Transi_0to3 = 0 ;
+			Stop_Tempo();
+		}
+		if (Transi_0to4 == 1 )
+		{
+			Etat = 4 ;
+			Change = 1 ;
+			Transi_0to4=0 ;
+			Stop_Tempo();
+		}
+		if (Poussoir_Start_Appui==1)
+		{
+			Etat = 2;
+			Change = 1;
+			Poussoir_Start_Appui=0;
+			Bouton = 1 ;
 			Stop_Tempo();
 		}
 	}
@@ -148,7 +169,7 @@ char  Change_Etat(void)
 	}
 	if(Etat == 2)
 	{
-		if (Transi_2to0 == 1 || Poussoir_Start_Appui==1)
+		if (Transi_2to0 == 1)
 		{
 			Etat = 0;
 			Change = 1;
@@ -164,6 +185,29 @@ char  Change_Etat(void)
 			Compteur_Marche_Pompe = TempoMini ;
 			Mode_Manuel = 0 ;
 			Minute60Sec = 0 ;
+		}
+		if (Poussoir_Start_Appui==1)
+		{
+			Etat = 2;
+			Change = 1;
+			Poussoir_Start_Appui=0;
+			Bouton = 1 ;
+			Default = 0 ;
+		}
+	}
+	if (Etat == 4)
+	{
+		if (Transi_4to0 == 1)
+		{
+			Etat=0;
+			Change=1 ;
+			Transi_4to0=0 ;
+		}
+		if (Transi_4to4 == 1)
+		{
+			Etat=4;
+			Change=1 ;
+			Transi_4to4=0 ;
 		}
 	}
 
@@ -196,7 +240,6 @@ void Modifie_Etat(void)
 	{
 		Transi_0to2 = 0;
 		Creer_Ecran_Marche();
-
 		Refresh_Slider(Compteur_Marche_Pompe);
 
 	}
@@ -208,6 +251,10 @@ void Modifie_Etat(void)
 	}
 	if (Etat ==3){
 		Creer_Ecran_Lancer_Prog() ;
+	}
+	if (Etat==4)
+	{
+		Creer_Ecran_Lancer_Capteur() ;
 	}
 
 }

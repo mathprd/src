@@ -29,6 +29,8 @@ extern char Transi_2to0;
 extern char Poussoir_Start_Appui;
 extern int Compteur_Marche_Pompe;
 extern char Minute60Sec ;
+extern int Bouton ;
+extern int Default ;
 
 int A_Effacer = 0 ;
 int Mode_Manuel = 0 ;
@@ -40,15 +42,23 @@ lv_obj_t * Texte_Marche;
 
 void Creer_Ecran_Marche(void)
 {
-	lv_obj_clean(lv_scr_act());
-	Default_Affichage();
-	Bouton_Retour_Marche();
-	Bouton_Stopper_Pompe();
-	Bouton_Activer_Pompe();
-	lv_task_handler();
+	if (Default==1){
+		lv_obj_clean(lv_scr_act());
+		Default_Affichage();
+		Bouton_Retour_Marche();
+		Bouton_Stopper_Pompe();
+		Bouton_Activer_Pompe();
+		lv_task_handler();
+	}
 	if (A_Effacer == 1){
 		Ecran_Marche();
 	}
+	if (Bouton == 1 && Mode_Manuel == 0){
+		Bouton1();
+	} else if (Bouton == 1 && Mode_Manuel == 1){
+		Bouton2();
+	}
+	Default = 1 ;
 }
 
 
@@ -350,7 +360,6 @@ void event_handler_BoutonActiver_Pompe(lv_event_t *e) {
 			A_Effacer = 1 ;
 			Ecran_Marche();
 		}
-		//Init_TIM3_Pompe_1sec();
 		Run_Pompe_1sec();
 		Allume_Pompe();
 		Mode_Manuel = 1 ;
@@ -490,6 +499,32 @@ void Ecran_Marche(void){
 
 }
 
+
+void Bouton1(){
+	if (A_Effacer == 0){
+		A_Effacer = 1 ;
+		Ecran_Marche();
+	}
+	Run_Pompe_1sec();
+	Allume_Pompe();
+	Mode_Manuel = 1 ;
+	Bouton=0;
+}
+
+void Bouton2(){
+	if (A_Effacer == 1){
+		lv_obj_del(Texte_Marche) ;
+		lv_obj_del(spinner) ;
+		A_Effacer = 0 ;
+	}
+	Eteint_Pompe();
+	Stop_Pompe_1sec();;
+	Compteur_Marche_Pompe = TempoMini ;
+	Mode_Manuel = 0 ;
+	Minute60Sec = 0 ;
+	Bouton=0;
+	Transi_2to0=1 ;
+}
 
 
 

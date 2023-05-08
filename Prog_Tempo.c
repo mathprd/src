@@ -173,7 +173,7 @@ char  Is_Start(Data_Prog_Typedef  *Data, DS1307_Time_Typedef Top)
 	for (i = 0 ; i < NumProgMax ; i ++)
 	{
 		if (Prog_En_Marche[i] == 1){
-			if ((Data->Jour[i] == Data->Jour_Stop[i]) &&  ((Data->Jour[i] & Top.Day) != 0)) {  //même jour de fin et de début a mettre et jour actuel
+			if ((Data->Jour[i] == Data->Jour_Stop[i]) &&  ((Data->Jour[i] & (0x1 << (Top.Day-1))) != 0)) {  //même jour de fin et de début a mettre et jour actuel
 				if ((Data->H_Start[i] == Data->H_Stop[i]) && (Data->H_Start[i] == Top.Hour)){ 	//même heure de début et de fin et heure actuelle
 					if ((Data->M_Start[i] <= Top.Min) && (Data->M_Stop[i] > Top.Min)) {
 						Egal = 1 ;
@@ -189,14 +189,14 @@ char  Is_Start(Data_Prog_Typedef  *Data, DS1307_Time_Typedef Top)
 				} else if ((Data->H_Start[i] < Top.Hour) && (Data->H_Stop[i] > Top.Hour)){
 					Egal = 1 ;
 				}
-			} else if ((Data->Jour[i] & Top.Day) != 0){   //Jour actuel = Jour de debut
-				if ((Data->H_Start[i] = Top.Hour) && (Data->M_Start[i] <= Top.Min)){
+			} else if ((Data->Jour[i] & (0x1 << (Top.Day-1))) != 0){   //Jour actuel = Jour de debut
+				if ((Data->H_Start[i] == Top.Hour) && (Data->M_Start[i] <= Top.Min)){
 					Egal = 1 ;
 				} else if (Data->H_Start[i] < Top.Hour){
 					Egal = 1 ;
 				}
-			} else if ((Data->Jour_Stop[i] & Top.Day) != 0){   //Jour actuel = Jour de fin
-				if ((Data->H_Stop[i] = Top.Hour) && (Data->M_Stop[i] > Top.Min)){
+			} else if ((Data->Jour_Stop[i] & (0x1 << (Top.Day-1))) != 0){   //Jour actuel = Jour de fin
+				if ((Data->H_Stop[i] == Top.Hour) && (Data->M_Stop[i] >= Top.Min)){
 					Egal = 1 ;
 				} else if (Data->H_Stop[i] > Top.Hour){
 					Egal = 1 ;
@@ -204,9 +204,33 @@ char  Is_Start(Data_Prog_Typedef  *Data, DS1307_Time_Typedef Top)
 			}
 		}
 	}
+	if (CapteurActivated == 1){
+		if (1 == 1){    //check si seuil
+			Egal = 1 ;
+		}
+	}
 	return (Egal);
 }
 
+
+/*char  Is_Start(Data_Prog_Typedef  *Data, DS1307_Time_Typedef Top)
+{
+	int i;
+	char Egal ;
+
+	Egal = 0;
+
+	for (i = 0 ; i < NumProgMax ; i ++)
+	{
+		if (Prog_En_Marche[i] == 1){
+			if (Data->Jour[i] & Top.Day != 0){
+				Egal = 1 ;
+			}
+		}
+	}
+	return (Egal);
+}
+*/
 
 void Gestion_Priorites(void){
 
@@ -215,7 +239,6 @@ void Gestion_Priorites(void){
 			Verif_Programme();
 		}
 	}
-
 }
 
 
